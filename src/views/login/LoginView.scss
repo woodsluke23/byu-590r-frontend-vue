@@ -1,1 +1,48 @@
 @use '@/assets/styles/ui.scss';
+
+.login-page-content {
+    background-color: ui.$colors-ui-black;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.login-box {
+    border-radius: 16px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    row-gap: ui.$spacing-medium-large;
+    border: 2px solid white;
+    background-color: white;
+    padding: ui.$spacing-medium-large;
+
+    & div,
+    p {
+        color: ui.$colors-ui-black;
+    }
+}
+
+.input-container {
+    width: 400px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    row-gap: ui.$spacing-small;
+}
+
+.button-container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    row-gap: ui.$spacing-medium;
+    padding-top: 20px;
+}
+
+.popout {
+    width: 600px;
+}
