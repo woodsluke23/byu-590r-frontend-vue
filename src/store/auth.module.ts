@@ -23,6 +23,8 @@ export const auth = {
         },
         logout({ commit }) {
             authService.logout()
+            localStorage.removeItem('user')
+            localStorage.removeItem('userToken')
             commit('logout')
         },
         register({ commit }, user) {

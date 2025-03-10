@@ -7,9 +7,39 @@ export default {
             alertType: 'error',
             errorMsg: '',
             password: '',
+            c_password: '',
             email: '',
-            dialog: false,
+            forgotEmail: '',
+            submitForgotPasswordLoading: false,
+            name: '',
+            forgotpassworddialog: false,
+            registerdialog: false,
             isLoading: false,
+            isFormValid: false,
+            isRegisterFormValid: false,
+            registerFormIsLoading: false,
+            register: {
+                name: '',
+                email: '',
+                password: '',
+                c_password: '',
+            },
+            registerRules: {
+                name: [(v) => !!v || 'Name is required'],
+                email: [
+                    (v) => !!v || 'Email is required',
+                    (v) => (v && v.length > 3) || 'Min 3 Characters', // Same as emailRules
+                ],
+                password: [
+                    (v) => !!v || 'Password is required',
+                    (v) => (v && v.length >= 10) || 'Min 10 Characters', // Same as passwordRules
+                ],
+                c_password: [
+                    (v) => !!v || 'Password confirmation is required',
+                    (v) => (v && v.length >= 10) || 'Min 10 Characters', // Same as passwordRules
+                    (v) => v === this.register.password || 'Passwords must match', // Check if passwords match
+                ],
+            },
             emailRules: [
                 (value) => !!value || 'Required.',
                 (value) => (value && value.length > 3) || 'Min 3 Characters',
@@ -18,9 +48,6 @@ export default {
                 (value) => !!value || 'Required.',
                 (value) => (value && value.length >= 10) || 'Min 10 Characters',
             ],
-            isFormValid: false,
-            hardCodedEmail: 'woodsluke23@gmail.com',
-            hardCodedPassword: 'happy123456',
         }
     },
     methods: {
@@ -28,26 +55,58 @@ export default {
             if (!this.isFormValid) {
                 return
             }
-
-            this.errorMsg = ''
-            if (this.hardCodedPassword === this.password && this.hardCodedEmail === this.email) {
-                this.alertType = 'success'
-                this.errorMsg = 'Login Success. Redirecting'
-                this.isLoading = true
-                setTimeout(() => {
-                    this.isAuthenticated = true
-                    this.$emit('authenticate', this.isAuthenticated)
-                }, 1000)
-            } else if (this.email === this.password) {
-                this.alertType = 'warning'
-                this.errorMsg = 'Your username and Password can not be the same!'
-            } else {
-                this.alertType = 'error'
-                this.errorMsg = 'Login Failed! Can not Authenticate'
+            const user = {
+                email: this.email,
+                password: this.password,
             }
+            this.errorMsg = ''
+            this.isLoading = true
+            this.$store.dispatch('auth/login', user).then(
+                (response) => {
+                    const token = response.data.token // Assuming 'response' contains token
+                    if (token) {
+                        localStorage.setItem('userToken', token) // Store token in localStorage
+                        this.isAuthenticated = true
+                        this.$emit('authenticate', this.isAuthenticated)
+                        alert('Login successful!')
+                    }
+                },
+                (error) => {
+                    this.isLoading = false
+                    this.errorMsg =
+                        (error.response && error.response.data && error.response.data.message) ||
+                        error.message ||
+                        error.toString()
+                }
+            )
         },
         forgotPassword() {
             console.log('here')
+        },
+        submitRegister() {
+            if (!this.isRegisterFormValid) {
+                return
+            }
+
+            const register = {
+                name: this.register.name,
+                email: this.register.email,
+                password: this.register.password,
+                c_password: this.register.c_password,
+            }
+
+            this.registerFormIsLoading = true
+            this.$store.dispatch('auth/register', register).then(
+                () => {
+                    alert('success!')
+                    this.registerFormIsLoading = false
+                    this.registerdialog = false
+                },
+                (error) => {
+                    this.registerFormIsLoading = false
+                    alert('error!')
+                }
+            )
         },
     },
 }

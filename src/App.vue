@@ -21,6 +21,7 @@ export default {
     },
     methods: {
         logout() {
+            this.$store.dispatch('auth/logout')
             this.isAuthenticated = false
         },
         checkAuth(auth) {
