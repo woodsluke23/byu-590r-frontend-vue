@@ -1,8 +1,14 @@
 @use '@/assets/styles/ui.scss';
 
+html,
+body {
+    height: 100%;
+    margin: 0; /* To remove any default margin */
+}
+
 .login-page-content {
     background-color: ui.$colors-ui-black;
-    height: 100vh;
+    height: 100%; /* Full height of the viewport */
     display: flex;
     justify-content: center;
     align-items: center;

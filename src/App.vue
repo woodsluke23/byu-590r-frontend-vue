@@ -1,6 +1,7 @@
 <script lang="ts">
 import { RouterLink, RouterView } from 'vue-router'
 import LoginView from './views/login/LoginView.vue'
+import { mapState } from 'vuex'
 
 export default {
     name: 'App',
@@ -9,10 +10,55 @@ export default {
         RouterLink,
         RouterView,
     },
-    data: function () {
+    data() {
         return {
             isAuthenticated: false,
+            profileDialog: false,
+            profileIsUploading: false,
+            verificationEmailLoading: false,
+            showEmailNotVerifiedDialog: false,
+            showChangeEmailTextField: false,
+            changeEmail: false,
+            successVerificationMessage: '',
+            changeEmailRules: [
+                (value) => !!value || 'Required.',
+                (value) => (value && value.length >= 3) || 'Min 3 characters',
+            ],
+            profile: {
+                avatar: '',
+                name: '',
+                title: '',
+                icon: 'mdi-account-circle',
+                color: 'info',
+            },
+            profilePictureImage: '',
+            emailOfVerification: '',
         }
+    },
+    computed: {
+        ...mapState({
+            user() {
+                return this.$store.state.user.user
+            },
+            auth() {
+                return this.$store.state.auth
+            },
+            authUser() {
+                return this.auth.user
+            },
+            isAuthenticated() {
+                return this.auth.status.loggedIn && this.authUser.token !== undefined
+            },
+            title() {
+                return 'Welcome ' + this.authUser.name + '!'
+            },
+            avatarURL() {
+                return this.user.avatar || ''
+            },
+            profilePictureChangeLabel() {
+                return 'Profile picture change'
+            },
+        }),
     },
     created() {
         if (this.isAuthenticated) {
@@ -28,21 +74,141 @@ export default {
             console.log('Authenticated!', auth)
             this.isAuthenticated = auth
         },
+        onAvatarChange(e) {
+            var image = e.target.files || e.dataTransfer.files
+            if (!image.length) return
+            this.profileIsUploading = true
+
+            this.$store
+                .dispatch('user/uploadAvatar', image[0])
+                .then((response) => {
+                    this.$store.commit('user/setAvatar', response.avatar) // Commit to 'user'
+                    this.profileIsUploading = false
+                })
+                .catch((error) => {
+                    console.log(error)
+                    alert('Error. Try again')
+                    this.profileIsUploading = false
+                })
+        },
+        removeAvatar() {
+            this.profileIsUploading = true
+
+            this.$store
+                .dispatch('user/removeAvatar')
+                .then(() => {
+                    this.$store.commit('user/setAvatar', '') // Reset avatar
+                    this.profileIsUploading = false
+                })
+                .catch((error) => {
+                    console.log(error)
+                    alert('Error. Try again')
+                    this.profileIsUploading = false
+                })
+        },
+        getCurrentUser() {
+            this.profile.name = this.authUser.name
+
+            this.profile.title = this.title
+            this.$store
+                .dispatch('user/getUser')
+                .then((response) => {
+                    if (response.avatar) {
+                        this.$store.commit('user/setAvatar', response.avatar) // Commit avatar
+                    }
+                    if (!response.email_verified_at) {
+                        this.showEmailNotVerifiedDialog = true
+                    }
+                })
+                .catch((error) => {
+                    this.logout()
+                })
+        },
     },
 }
 </script>
 
 <template>
-    <div v-if="isAuthenticated">
-        <header>
-            <div class="header-navigation">
-                <RouterLink to="/">Home</RouterLink>
-                <RouterLink to="/about">About</RouterLink>
-            </div>
-            <button @click="logout()">Logout</button>
-        </header>
+    <v-app>
+        <v-app-bar v-if="isAuthenticated">
+            <v-spacer></v-spacer>
+            <v-btn to="home"> Home </v-btn>
+            <v-btn to="about"> About </v-btn>
 
-        <RouterView />
-    </div>
-    <LoginView v-else :is-authenticated="isAuthenticated" @authenticate="checkAuth($event)" />
+            <v-menu rounded>
+                <template v-slot:activator="{ props }">
+                    <v-btn icon v-bind="props">
+                        <v-avatar color="brown" size="large">
+                            <v-img
+                                icon
+                                v-bind="props"
+                                v-if="avatarURL"
+                                alt="Avatar"
+                                :src="avatarURL"
+                            ></v-img>
+                            <v-icon
+                                v-bind="props"
+                                v-else
+                                :color="profile.color"
+                                :icon="profile.icon"
+                            ></v-icon>
+                        </v-avatar>
+                    </v-btn>
+                </template>
+                <v-card>
+                    <v-card-text>
+                        <div style="color: black">
+                            <h3>{{ profile.name }}</h3>
+                            <v-btn @click="profileDialog = true">Profile</v-btn>
+                            <v-btn @click="logout()">Logout</v-btn>
+                        </div>
+                    </v-card-text>
+                </v-card>
+            </v-menu>
+        </v-app-bar>
+
+        <v-main>
+            <v-container class="d-flex justify-center align-center" style="height: 100vh">
+                <div v-if="isAuthenticated">
+                    <RouterView />
+                </div>
+                <LoginView
+                    v-else
+                    :is-authenticated="isAuthenticated"
+                    @authenticate="checkAuth($event)"
+                />
+            </v-container>
+
+            <v-dialog v-model="profileDialog">
+                <v-form>
+                    <v-card>
+                        <v-card-title>Profile</v-card-title>
+                        <v-card-subtitle>Enter your profile information here</v-card-subtitle>
+                        <v-card>
+                            <v-img
+                                cover
+                                v-if="avatarURL"
+                                :src="avatarURL"
+                                height="150"
+                                width="150"
+                            ></v-img>
+
+                            <v-icon v-else :color="profile.color" :icon="profile.icon"></v-icon>
+
+                            <v-file-input
+                                accept="image/*"
+                                :loading="profileIsUploading"
+                                :disable="profileIsUploading"
+                                @change="onAvatarChange"
+                                :label="profilePictureChangeLabel"
+                            ></v-file-input>
+                        </v-card>
+                        <v-card-actions>
+                            <v-btn @click="removeAvatar">Remove Profile Picture</v-btn>
+                        </v-card-actions>
+                    </v-card>
+                </v-form>
+            </v-dialog>
+        </v-main>
+    </v-app>
 </template>
