@@ -1,0 +1,44 @@
+// src/views/restaurants/RestaurantView.scss
+
+.restaurant-view {
+    padding: 20px;
+    h1 {
+        font-size: 2rem;
+    }
+    v-table {
+        margin-top: 20px;
+    }
+    td {
+        padding: 10px;
+    }
+}
+
+.restaurant-logo {
+    width: 100px; /* Set width */
+    height: auto; /* Maintain aspect ratio */
+    object-fit: contain; /* Prevent distortion */
+    border-radius: 8px; /* Optional: rounded corners */
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2); /* Optional: add a subtle shadow */
+}
+
+h1 {
+    font-size: 2rem;
+    color: #333;
+}
+
+ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+li {
+    padding: 10px;
+    margin-bottom: 8px;
+    background-color: #fff;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+li:hover {
+    background-color: #f1f1f1;
+}

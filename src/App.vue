@@ -12,7 +12,6 @@ export default {
     },
     data() {
         return {
-            isAuthenticated: false,
             profileDialog: false,
             profileIsUploading: false,
             verificationEmailLoading: false,
@@ -134,6 +133,8 @@ export default {
             <v-spacer></v-spacer>
             <v-btn to="home"> Home </v-btn>
             <v-btn to="about"> About </v-btn>
+            <v-btn to="/restaurants">Restaurants</v-btn>
+            <!-- Add this button for the restaurants route -->
 
             <v-menu rounded>
                 <template v-slot:activator="{ props }">
