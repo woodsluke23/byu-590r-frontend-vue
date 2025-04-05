@@ -7,16 +7,37 @@ class RestaurantService {
     getRestaurants() {
         return axios.get(API_URL + 'restaurants', { headers: authHeader() }).then((response) => {
             console.log(response) // Optional: log the response to verify data
-            return response.data.data // Change this to response.data.results
+            return response.data.data
         })
     }
 
-    // Add a new restaurant (POST request)
-    addRestaurant(restaurantData) {
+    createRestaurant(restaurant) {
+        let formData = new FormData()
+        formData.append('img', restaurant.img)
+        formData.append('restaurant_name', restaurant.restaurant_name)
+        formData.append('restaurant_description', restaurant.restaurant_description)
         return axios
-            .post(API_URL + 'restaurants', restaurantData, { headers: authHeader() })
+            .post(API_URL + 'restaurants', formData, {
+                headers: authHeader('multipart'),
+            })
             .then((response) => {
-                return response.data.data // Change this to response.data.results
+                return response.data.data
+            })
+    }
+
+    updateRestaurant(restaurant) {
+        return axios
+            .put(API_URL + 'restaurants/' + restaurant.id, restaurant, { headers: authHeader() })
+            .then((response) => {
+                return response.data.data
+            })
+    }
+
+    deleteRestaurant(restaurant) {
+        return axios
+            .delete(API_URL + "restaurants/" + restaurant.id, { headers: authHeader() })
+            .then((response) => {
+                return response.data.data
             })
     }
 }
