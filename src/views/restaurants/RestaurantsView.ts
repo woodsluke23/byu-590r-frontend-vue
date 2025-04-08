@@ -14,6 +14,8 @@ export default defineComponent({
             editRestaurant: {},
             selectedDeleteRestaurant: null,
 
+            newRestaurantImage: null,
+
             // Messages
             errorMessage: '',
             editRestaurantErrorMessage: null,
@@ -24,6 +26,7 @@ export default defineComponent({
             createRestaurantDialog: false,
             editRestaurantDialog: false,
             deleteRestaurantDialog: false,
+            editFileChangeDialogBtn: false,
         }
     },
     computed: {
@@ -82,11 +85,11 @@ export default defineComponent({
         },
 
         deleteRestaurant() {
-            this.restaurantIsDeleting = true
             this.deleteRestaurantErrorMessage = null
             this.$store
                 .dispatch('restaurants/deleteRestaurant', this.selectedDeleteRestaurant)
                 .then(() => {
+                    this.getRestaurants()
                     this.selectedDeleteRestaurant = false
                     this.deleteRestaurantDialog = false
                 })
@@ -96,16 +99,28 @@ export default defineComponent({
         },
 
         updateRestaurant() {
-            this.editRestaurantErrorMessage = null
             this.$store
                 .dispatch('restaurants/updateRestaurant', this.editRestaurant)
                 .then(() => {
+                    // If the picture was changed, update it
+                    if (this.newRestaurantImage) {
+                        this.$store
+                            .dispatch('restaurants/updateRestaurantPicture', {
+                                restaurant: this.editRestaurant,
+                                picture: this.newRestaurantImage,
+                            })
+                            .then(() => {
+                                console.log('Restaurant picture updated successfully')
+                            })
+                            .catch((error) => {
+                                console.error('Error updating restaurant picture:', error)
+                            })
+                    }
                     this.editRestaurantDialog = false
-                    this.editFileChangeDialogBtn = false
-                    this.editRestaurant = {}
+                    this.getRestaurants() // Refresh the list
                 })
                 .catch((error) => {
-                    this.editRestaurantErrorMessage = error.response.data.data
+                    console.error('Error updating restaurant:', error)
                 })
         },
 
@@ -115,6 +130,7 @@ export default defineComponent({
             this.$store
                 .dispatch('restaurants/createRestaurant', this.newRestaurant)
                 .then(() => {
+                    this.getRestaurants()
                     this.createRestaurantDialog = false
                 })
                 .catch((error) => {
@@ -122,16 +138,22 @@ export default defineComponent({
                 })
         },
 
-        onExistingRestaurantPictureChange(e) {
-            var image = e.target.files || e.dataTransfer.files
-            if (!image.length) return
-
-            this.editRestaurant.file = image[0]
-            this.$store
-                .dispatch('restaurants/updateRestaurantPicture', this.editRestaurant)
-                .then((error) => {
-                    this.editRestaurantErrorMessage = error.response.data.dataT
-                })
+        onExistingRestaurantPictureChange(file) {
+            if (file) {
+                // Check if a file is selected
+                this.editRestaurant.img = file // Store the new image in the component state
+                this.$store
+                    .dispatch('restaurants/updateRestaurantPicture', {
+                        restaurant: this.editRestaurant,
+                        picture: file, // Pass the selected file to the store
+                    })
+                    .then(() => {
+                        console.log('Picture updated successfully')
+                    })
+                    .catch((error) => {
+                        console.error('Error updating picture:', error)
+                    })
+            }
         },
 
         onNewRestaurantFileChange(event) {
@@ -142,7 +164,7 @@ export default defineComponent({
             const image = event.target.files || event.dataTransfer.files
             if (!image.length) return
 
-            this.newRestaurant.file = image[0]
+            this.newRestaurant.img = image[0]
         },
     },
 })

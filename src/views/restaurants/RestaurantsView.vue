@@ -99,7 +99,7 @@
                 >
             </v-card-actions>
         </v-card>
-    </v-dialog> 
+    </v-dialog>
 
     <v-dialog v-model="editRestaurantDialog">
         <v-card>
@@ -163,13 +163,7 @@
             </v-card-text>
             <v-card-actions>
                 <v-btn color="red" @click="deleteRestaurantDialog = null">No</v-btn>
-                <v-btn
-                    color="green"
-                    @click="deleteRestaurant()"
-                    :loading="restaurantIsDeleting"
-                    :disable="restaurantIsDeleting"
-                    >Yes</v-btn
-                >
+                <v-btn color="green" @click="deleteRestaurant()">Yes</v-btn>
             </v-card-actions>
         </v-card>
     </v-dialog>
