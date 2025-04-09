@@ -37,9 +37,9 @@ export const restaurants = {
             })
         },
 
-        updateRestaurantPicture({ commit }, { restaurant, picture }) {
+        updateRestaurantPicture({ commit }, restaurant) {
             return restaurantService
-                .updateRestaurantPicture(restaurant, picture)
+                .updateRestaurantPicture(restaurant)
                 .then((response) => {
                     // Assuming the API response includes the updated restaurant data
                     const updatedRestaurant = response.restaurant
@@ -90,7 +90,7 @@ export const restaurants = {
             const index = state.restaurantsList.findIndex((r) => r.id === updatedRestaurant.id)
             if (index !== -1) {
                 // Update the restaurant's image field
-                state.restaurantsList[index].img = updatedRestaurant.img
+                state.restaurantsList[index].file = updatedRestaurant.file
             }
         },
     },

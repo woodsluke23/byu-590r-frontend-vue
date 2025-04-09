@@ -18,12 +18,10 @@
                 <tr v-for="restaurant in restaurants" :key="restaurant.id">
                     <td>
                         <img
-                            v-if="getImageUrl(restaurant.img)"
-                            :src="getImageUrl(restaurant.img)"
+                            :src="restaurant.file"
                             alt="Restaurant Logo"
                             class="restaurant-logo"
                         />
-                        <span v-else>No image available</span>
                     </td>
                     <td>{{ restaurant.restaurant_name }}</td>
                     <td>{{ restaurant.restaurant_description || 'No description available' }}</td>
