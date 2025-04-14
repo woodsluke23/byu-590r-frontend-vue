@@ -10,6 +10,8 @@
                     <th>Logo</th>
                     <th>Restaurant Name</th>
                     <th>Description</th>
+                    <th>Signature Sauce</th>
+                    <th>Type of Chicken</th>
                     <th>Edit Restaurant</th>
                     <th>Delete Restaurant</th>
                 </tr>
@@ -17,14 +19,20 @@
             <tbody>
                 <tr v-for="restaurant in restaurants" :key="restaurant.id">
                     <td>
-                        <img
-                            :src="restaurant.file"
-                            alt="Restaurant Logo"
-                            class="restaurant-logo"
-                        />
+                        <img :src="restaurant.file" alt="Restaurant Logo" class="restaurant-logo" />
                     </td>
                     <td>{{ restaurant.restaurant_name }}</td>
                     <td>{{ restaurant.restaurant_description || 'No description available' }}</td>
+                    <td>
+                        {{ restaurant.sauce ? restaurant.sauce.sauce_name : 'No sauce selected' }}
+                    </td>
+                    <td>
+                        {{
+                            restaurant.chicken_type
+                                ? restaurant.chicken_type.chicken_type_name
+                                : 'No chicken type specified'
+                        }}
+                    </td>
                     <td>
                         <v-btn
                             @click="openEditRestaurantDialog(restaurant)"
