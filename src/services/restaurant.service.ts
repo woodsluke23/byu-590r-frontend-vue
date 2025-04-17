@@ -28,6 +28,13 @@ class RestaurantService {
             formData.append('chicken_type_id', restaurant.chicken_type_id)
         }
 
+        if (restaurant.sauce_name) {
+            formData.append('sauce_name', restaurant.sauce_name)
+            if (restaurant.sauce_description) {
+                formData.append('sauce_description', restaurant.sauce_description)
+            }
+        }
+
         for (let pair of formData.entries()) {
             console.log(pair[0] + ', ' + pair[1])
         }

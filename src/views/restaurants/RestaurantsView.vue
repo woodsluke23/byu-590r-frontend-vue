@@ -95,6 +95,12 @@
                             ></v-select>
                         </v-col>
                         <v-col>
+                            <v-text-field
+                                v-model="newRestaurant.sauce_name"
+                                label="Signature Sauce Name"
+                            ></v-text-field>
+                        </v-col>
+                        <v-col>
                             <v-file-input
                                 accept="image/*"
                                 @change="onNewRestaurantFileChange"
@@ -148,6 +154,12 @@
                                 label="Type of Chicken*"
                                 required
                             ></v-select>
+                        </v-col>
+                        <v-col>
+                            <v-text-field
+                                v-model="editRestaurant.sauce_name"
+                                label="Signature Sauce Name"
+                            ></v-text-field>
                         </v-col>
                         <v-col>
                             <div v-if="editFileChangeDialogBtn">

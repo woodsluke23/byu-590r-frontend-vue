@@ -11,6 +11,7 @@ export default defineComponent({
                 restaurant_description: '',
                 file: '',
                 chicken_type_id: '',
+                sauce_name: '',
             },
             editRestaurant: {},
             selectedDeleteRestaurant: null,
@@ -92,6 +93,15 @@ export default defineComponent({
 
         openEditRestaurantDialog(restaurant) {
             this.editRestaurant = restaurant
+
+            if (restaurant.sauce) {
+                this.editRestaurant.sauce_name = restaurant.sauce.sauce_name
+                this.editRestaurant.sauce_description = restaurant.sauce.description || ''
+            } else {
+                this.editRestaurant.sauce_name = ''
+                this.editRestaurant.sauce_description = ''
+            }
+
             this.editRestaurantDialog = true
         },
 
