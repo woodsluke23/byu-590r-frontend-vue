@@ -80,7 +80,7 @@
                         <v-col>
                             <v-text-field
                                 v-model="newRestaurant.restaurant_description"
-                                label="Restaurant Description*"
+                                label="Restaurant Description"
                                 required
                             ></v-text-field>
                         </v-col>
@@ -90,7 +90,7 @@
                                 :items="chickenTypes"
                                 item-title="chicken_type_name"
                                 item-value="id"
-                                label="Type of Chicken*"
+                                label="Type of Chicken"
                                 required
                             ></v-select>
                         </v-col>
@@ -104,7 +104,7 @@
                             <v-file-input
                                 accept="image/*"
                                 @change="onNewRestaurantFileChange"
-                                label="Restaurant Logo"
+                                label="Restaurant Logo*"
                             ></v-file-input>
                         </v-col>
                     </v-row>
@@ -141,7 +141,7 @@
                         <v-col>
                             <v-text-field
                                 v-model="editRestaurant.restaurant_description"
-                                label="Restaurant Description*"
+                                label="Restaurant Description"
                                 required
                             ></v-text-field>
                         </v-col>
@@ -151,7 +151,7 @@
                                 :items="chickenTypes"
                                 item-title="chicken_type_name"
                                 item-value="id"
-                                label="Type of Chicken*"
+                                label="Type of Chicken"
                                 required
                             ></v-select>
                         </v-col>
@@ -166,7 +166,7 @@
                                 <v-file-input
                                     accept="image/*"
                                     @change="onExistingRestaurantPictureChange"
-                                    label="Restaurant Logo"
+                                    label="Restaurant Logo*"
                                 ></v-file-input>
                                 <v-btn @click="editFileChangeDialogBtn = false"
                                     >Cancel File Change</v-btn
