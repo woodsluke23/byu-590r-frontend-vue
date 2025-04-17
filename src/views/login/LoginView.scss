@@ -3,36 +3,48 @@
 html,
 body {
     height: 100%;
-    margin: 0; /* To remove any default margin */
+    margin: 0;
+    padding: 0;
 }
 
 .login-page-content {
     background-color: ui.$colors-ui-black;
-    height: 100%; /* Full height of the viewport */
+    min-height: 100vh; /* Use min-height instead of height */
+    width: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
+    padding: 2rem;
 }
 
 .login-box {
+    max-width: 450px;
+    width: 100%;
     border-radius: 16px;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    row-gap: ui.$spacing-medium-large;
-    border: 2px solid white;
+    border: none;
     background-color: white;
     padding: ui.$spacing-medium-large;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
 
     & div,
     p {
         color: ui.$colors-ui-black;
     }
+
+    .login-header {
+        width: 100%;
+        text-align: center;
+        margin-bottom: ui.$spacing-medium;
+    }
 }
 
 .input-container {
-    width: 400px;
+    width: 100%;
+    max-width: 400px;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -50,5 +62,23 @@ body {
 }
 
 .popout {
-    width: 600px;
+    max-width: 600px;
+    width: 100%;
+
+    .v-card {
+        border-radius: 12px;
+    }
+}
+
+/* Add responsiveness for smaller screens */
+@media (max-width: 600px) {
+    .login-box {
+        padding: ui.$spacing-medium;
+        width: 90%;
+        max-width: none;
+    }
+
+    .input-container {
+        width: 100%;
+    }
 }

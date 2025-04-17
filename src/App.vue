@@ -61,7 +61,7 @@ export default {
     },
     created() {
         if (this.isAuthenticated) {
-            this.$router.push('/home')
+            this.$router.push('/restaurants')
         }
     },
     methods: {
@@ -129,39 +129,60 @@ export default {
 
 <template>
     <v-app>
-        <v-app-bar v-if="isAuthenticated">
-            <v-spacer></v-spacer>
-            <v-btn to="home"> Home </v-btn>
-            <v-btn to="about"> About </v-btn>
-            <v-btn to="/restaurants">Restaurants</v-btn>
-            <!-- Add this button for the restaurants route -->
+        <v-app-bar v-if="isAuthenticated" elevation="1">
+            <v-app-bar-title>Chicken Restaurants</v-app-bar-title>
 
-            <v-menu rounded>
+            <v-spacer></v-spacer>
+
+            <v-btn to="/restaurants" variant="text">Restaurants</v-btn>
+            <v-btn to="about" variant="text"> About </v-btn>
+
+            <v-menu location="bottom end" transition="slide-y-transition">
                 <template v-slot:activator="{ props }">
-                    <v-btn icon v-bind="props">
-                        <v-avatar color="brown" size="large">
-                            <v-img
-                                icon
-                                v-bind="props"
-                                v-if="avatarURL"
-                                alt="Avatar"
-                                :src="avatarURL"
-                            ></v-img>
-                            <v-icon
-                                v-bind="props"
-                                v-else
-                                :color="profile.color"
-                                :icon="profile.icon"
-                            ></v-icon>
+                    <v-btn icon class="ml-2" v-bind="props">
+                        <v-avatar color="brown" size="38">
+                            <v-img v-if="avatarURL" alt="Avatar" :src="avatarURL" cover></v-img>
+                            <v-icon v-else :color="profile.color" :icon="profile.icon"></v-icon>
                         </v-avatar>
                     </v-btn>
                 </template>
-                <v-card>
-                    <v-card-text>
-                        <div style="color: black">
-                            <h3>{{ profile.name }}</h3>
-                            <v-btn @click="profileDialog = true">Profile</v-btn>
-                            <v-btn @click="logout()">Logout</v-btn>
+                <v-card min-width="200">
+                    <v-card-text class="pa-4">
+                        <div class="d-flex flex-column align-center mb-4">
+                            <v-avatar color="brown" size="64" class="mb-2">
+                                <v-img v-if="avatarURL" alt="Avatar" :src="avatarURL" cover></v-img>
+                                <v-icon
+                                    v-else
+                                    :color="profile.color"
+                                    :icon="profile.icon"
+                                    size="36"
+                                ></v-icon>
+                            </v-avatar>
+                            <h3 class="text-h6 font-weight-medium mb-0">{{ profile.name }}</h3>
+                        </div>
+
+                        <v-divider class="mb-3"></v-divider>
+
+                        <div class="d-flex flex-column">
+                            <v-btn
+                                variant="text"
+                                @click="profileDialog = true"
+                                prepend-icon="mdi-account-edit"
+                                block
+                                class="justify-start mb-2"
+                            >
+                                Profile
+                            </v-btn>
+                            <v-btn
+                                variant="text"
+                                color="error"
+                                @click="logout()"
+                                prepend-icon="mdi-logout"
+                                block
+                                class="justify-start"
+                            >
+                                Logout
+                            </v-btn>
                         </div>
                     </v-card-text>
                 </v-card>
@@ -169,47 +190,86 @@ export default {
         </v-app-bar>
 
         <v-main>
-            <v-container class="d-flex justify-center align-center" style="height: 100vh">
-                <div v-if="isAuthenticated">
-                    <RouterView />
-                </div>
-                <LoginView
-                    v-else
-                    :is-authenticated="isAuthenticated"
-                    @authenticate="checkAuth($event)"
-                />
-            </v-container>
+            <!-- Remove the fixed height container that's causing scroll issues -->
+            <div v-if="isAuthenticated" class="main-content">
+                <RouterView />
+            </div>
+            <LoginView
+                v-else
+                :is-authenticated="isAuthenticated"
+                @authenticate="checkAuth($event)"
+            />
 
-            <v-dialog v-model="profileDialog">
-                <v-form>
-                    <v-card>
-                        <v-card-title>Profile</v-card-title>
-                        <v-card-subtitle>Enter your profile information here</v-card-subtitle>
-                        <v-card>
-                            <v-img
-                                cover
-                                v-if="avatarURL"
-                                :src="avatarURL"
-                                height="150"
-                                width="150"
-                            ></v-img>
+            <!-- Profile Dialog -->
+            <v-dialog v-model="profileDialog" max-width="500px">
+                <v-card>
+                    <v-card-title class="pb-2">
+                        <h3 class="text-h5">My Profile</h3>
+                    </v-card-title>
+                    <v-card-subtitle class="pb-4">Manage your profile information</v-card-subtitle>
 
-                            <v-icon v-else :color="profile.color" :icon="profile.icon"></v-icon>
+                    <v-divider></v-divider>
 
-                            <v-file-input
-                                accept="image/*"
-                                :loading="profileIsUploading"
-                                :disable="profileIsUploading"
-                                @change="onAvatarChange"
-                                :label="profilePictureChangeLabel"
-                            ></v-file-input>
-                        </v-card>
-                        <v-card-actions>
-                            <v-btn @click="removeAvatar">Remove Profile Picture</v-btn>
-                        </v-card-actions>
-                    </v-card>
-                </v-form>
+                    <v-card-text class="pt-4">
+                        <div class="d-flex flex-column align-center mb-6">
+                            <v-avatar color="brown" size="120" class="mb-4">
+                                <v-img v-if="avatarURL" :src="avatarURL" cover></v-img>
+                                <v-icon
+                                    v-else
+                                    :color="profile.color"
+                                    :icon="profile.icon"
+                                    size="64"
+                                ></v-icon>
+                            </v-avatar>
+
+                            <div class="d-flex">
+                                <v-file-input
+                                    accept="image/*"
+                                    :loading="profileIsUploading"
+                                    :disabled="profileIsUploading"
+                                    @change="onAvatarChange"
+                                    :label="profilePictureChangeLabel"
+                                    variant="outlined"
+                                    density="comfortable"
+                                    hide-details
+                                    class="mr-2"
+                                ></v-file-input>
+
+                                <v-btn
+                                    @click="removeAvatar"
+                                    :disabled="profileIsUploading || !avatarURL"
+                                    variant="outlined"
+                                    color="error"
+                                    icon="mdi-delete"
+                                    class="mt-1"
+                                ></v-btn>
+                            </div>
+                        </div>
+
+                        <v-text-field
+                            v-model="profile.name"
+                            label="Name"
+                            variant="outlined"
+                            readonly
+                            class="mb-4"
+                        ></v-text-field>
+                    </v-card-text>
+
+                    <v-card-actions>
+                        <v-spacer></v-spacer>
+                        <v-btn color="primary" variant="text" @click="profileDialog = false"
+                            >Close</v-btn
+                        >
+                    </v-card-actions>
+                </v-card>
             </v-dialog>
         </v-main>
     </v-app>
 </template>
+
+<style>
+.main-content {
+    height: 100%;
+    width: 100%;
+}
+</style>
