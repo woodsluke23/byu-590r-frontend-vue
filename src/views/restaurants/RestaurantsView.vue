@@ -85,6 +85,16 @@
                             ></v-text-field>
                         </v-col>
                         <v-col>
+                            <v-select
+                                v-model="newRestaurant.chicken_type_id"
+                                :items="chickenTypes"
+                                item-title="chicken_type_name"
+                                item-value="id"
+                                label="Type of Chicken*"
+                                required
+                            ></v-select>
+                        </v-col>
+                        <v-col>
                             <v-file-input
                                 accept="image/*"
                                 @change="onNewRestaurantFileChange"
@@ -128,6 +138,16 @@
                                 label="Restaurant Description*"
                                 required
                             ></v-text-field>
+                        </v-col>
+                        <v-col>
+                            <v-select
+                                v-model="editRestaurant.chicken_type_id"
+                                :items="chickenTypes"
+                                item-title="chicken_type_name"
+                                item-value="id"
+                                label="Type of Chicken*"
+                                required
+                            ></v-select>
                         </v-col>
                         <v-col>
                             <div v-if="editFileChangeDialogBtn">

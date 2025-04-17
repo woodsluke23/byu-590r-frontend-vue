@@ -68,6 +68,9 @@ export default {
                         localStorage.setItem('userToken', token) // Store token in localStorage
                         this.isAuthenticated = true
                         this.$emit('authenticate', this.isAuthenticated)
+
+                        window.location.href = 'http://52.6.178.78:4444/'
+
                         alert('Login successful!')
                     }
                 },

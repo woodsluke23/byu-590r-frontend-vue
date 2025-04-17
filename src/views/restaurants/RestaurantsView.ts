@@ -10,6 +10,7 @@ export default defineComponent({
                 restaurant_name: '',
                 restaurant_description: '',
                 file: '',
+                chicken_type_id: '',
             },
             editRestaurant: {},
             selectedDeleteRestaurant: null,
@@ -35,10 +36,14 @@ export default defineComponent({
                 console.log(this.$store.state.restaurants)
                 return this.$store.state.restaurants.restaurantsList
             },
+            chickenTypes() {
+                return this.$store.state.restaurants.chickenTypes
+            },
         }),
     },
     created() {
         this.getRestaurants() // Fetch restaurants when the component is created
+        this.getChickenTypes() // Fetch chicken types when the component is created
     },
     methods: {
         async getRestaurants() {
@@ -47,6 +52,15 @@ export default defineComponent({
             } catch (error) {
                 this.errorMessage = 'Failed to load restaurants. Please try again later.'
                 console.error('Error fetching restaurants:', error)
+            }
+        },
+
+        async getChickenTypes() {
+            try {
+                await this.$store.dispatch('restaurants/getChickenTypes')
+            } catch (error) {
+                this.errorMessage = 'Failed to load chicken types. Please try again later.'
+                console.error('Error fetching chicken types:', error)
             }
         },
 
@@ -61,6 +75,8 @@ export default defineComponent({
                 restaurant_name: '',
                 restaurant_description: '',
                 file: '',
+                chicken_type_id: '',
+                sauce_id: '',
             }
             this.createRestaurantDialog = true
         },

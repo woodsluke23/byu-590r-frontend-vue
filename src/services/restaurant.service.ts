@@ -11,11 +11,23 @@ class RestaurantService {
         })
     }
 
+    getChickenTypes() {
+        return axios.get(API_URL + 'chicken-types', { headers: authHeader() }).then((response) => {
+            console.log('Chicken types:', response.data.data) // Optional: log the response
+            return response.data.data
+        })
+    }
+
     createRestaurant(restaurant) {
         let formData = new FormData()
         formData.append('file', restaurant.file)
         formData.append('restaurant_name', restaurant.restaurant_name)
         formData.append('restaurant_description', restaurant.restaurant_description)
+
+        if (restaurant.chicken_type_id) {
+            formData.append('chicken_type_id', restaurant.chicken_type_id)
+        }
+
         for (let pair of formData.entries()) {
             console.log(pair[0] + ', ' + pair[1])
         }

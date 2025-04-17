@@ -2,6 +2,7 @@ import restaurantService from '../services/restaurant.service'
 
 const initialState = {
     restaurantsList: [],
+    chickenTypes: [],
 }
 
 export const restaurants = {
@@ -12,6 +13,18 @@ export const restaurants = {
             return restaurantService.getRestaurants().then(
                 (results) => {
                     commit('setRestaurants', results)
+                    return Promise.resolve(results)
+                },
+                (response) => {
+                    return Promise.resolve(response)
+                }
+            )
+        },
+
+        getChickenTypes({ commit }) {
+            return restaurantService.getChickenTypes().then(
+                (results) => {
+                    commit('setChickenTypes', results)
                     return Promise.resolve(results)
                 },
                 (response) => {
@@ -68,6 +81,9 @@ export const restaurants = {
         setRestaurants(state, results) {
             state.restaurantsList = results
         },
+        setChickenTypes(state, results) {
+            state.chickenTypes = results
+        },
         addRestaurant(state, restaurant) {
             state.restaurantsList.push(restaurant)
         },
@@ -97,6 +113,10 @@ export const restaurants = {
     getters: {
         getRestaurants: (state) => {
             return state.restaurantsList
+        },
+
+        getChickenTypes: (state) => {
+            return state.chickenTypes
         },
 
         getRestaurantStateIndexByRestaurantID: (state) => (restaurantID) => {
